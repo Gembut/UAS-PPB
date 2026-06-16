@@ -1,6 +1,5 @@
 package com.example.uas_ppb.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -26,12 +25,11 @@ import com.example.uas_ppb.ui.viewmodel.CoffeeViewModel
 
 private enum class RewardCategory(
     val title: String,
-    val icon: ImageVector,
-    val accentColor: Color
+    val icon: ImageVector
 ) {
-    DRINK("Minuman", Icons.Default.Coffee, Color(0xFF2E7D32)),
-    FOOD("Makanan", Icons.Default.Fastfood, Color(0xFFE65100)),
-    MERCH("Merch", Icons.Default.WorkspacePremium, Color(0xFF1565C0))
+    DRINK("Minuman", Icons.Default.Coffee),
+    FOOD("Makanan", Icons.Default.Fastfood),
+    MERCH("Merch", Icons.Default.WorkspacePremium)
 }
 
 private data class Reward(
@@ -65,20 +63,24 @@ fun RewardScreen(
         topBar = {
             TopAppBar(
                 title = {
-                    Column {
-                        Text(
-                            text = "Reward Collection",
-                            color = Color.White,
-                            fontWeight = FontWeight.SemiBold
-                        )
-                    }
+                    Text(
+                        text = "Reward Collection",
+                        fontWeight = FontWeight.SemiBold
+                    )
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back"
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B5E20))
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { padding ->
@@ -93,40 +95,49 @@ fun RewardScreen(
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.primaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                    ),
                     shape = RoundedCornerShape(20.dp)
                 ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(16.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            Column {
-                                Text(
-                                    text = "Your Current Points",
-                                    fontSize = 14.sp,
-                                    color = Color(0xFF546E7A)
-                                )
-                                Text(
-                                    text = "${m.points} pts",
-                                    fontSize = 26.sp,
-                                    fontWeight = FontWeight.Bold,
-                                    color = Color(0xFF1B5E20)
-                                )
-                                Spacer(modifier = Modifier.height(8.dp))
-                                MembershipLevelChip(label = "${m.level} Member", color = levelColor(m.level))
-                            }
-                            MembershipTierIcon(
-                                color = levelColor(m.level),
-                                label = m.level
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Your Current Points",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                            )
+                            Text(
+                                text = "${m.points} pts",
+                                style = MaterialTheme.typography.headlineMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Spacer(modifier = Modifier.height(8.dp))
+                            MembershipLevelChip(
+                                label = "${m.level} Member", 
+                                color = getLevelColor(m.level)
                             )
                         }
+                        MembershipTierIcon(
+                            color = getLevelColor(m.level),
+                            label = m.level
+                        )
                     }
+                }
 
                 Spacer(modifier = Modifier.height(24.dp))
-                Text(text = "Available Rewards", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Text(
+                    text = "Available Rewards", 
+                    style = MaterialTheme.typography.titleLarge,
+                    color = MaterialTheme.colorScheme.onBackground
+                )
                 Spacer(modifier = Modifier.height(8.dp))
 
                 LazyColumn {
@@ -160,19 +171,20 @@ private fun RewardCategoryHeader(category: RewardCategory) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(top = 8.dp, bottom = 6.dp),
+            .padding(top = 16.dp, bottom = 8.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Icon(
             imageVector = category.icon,
             contentDescription = null,
-            tint = category.accentColor
+            tint = MaterialTheme.colorScheme.secondary
         )
         Spacer(modifier = Modifier.width(8.dp))
         Text(
             text = category.title,
+            style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.SemiBold,
-            color = category.accentColor
+            color = MaterialTheme.colorScheme.secondary
         )
     }
 }
@@ -180,14 +192,14 @@ private fun RewardCategoryHeader(category: RewardCategory) {
 @Composable
 private fun MembershipLevelChip(label: String, color: Color) {
     Surface(
-        color = color.copy(alpha = 0.14f),
+        color = color.copy(alpha = 0.2f),
         shape = MaterialTheme.shapes.small
     ) {
         Text(
             text = label,
             modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
             color = color,
-            fontSize = 12.sp,
+            style = MaterialTheme.typography.labelMedium,
             fontWeight = FontWeight.SemiBold
         )
     }
@@ -196,7 +208,7 @@ private fun MembershipLevelChip(label: String, color: Color) {
 @Composable
 private fun MembershipTierIcon(color: Color, label: String) {
     Surface(
-        color = color.copy(alpha = 0.14f),
+        color = color.copy(alpha = 0.2f),
         shape = RoundedCornerShape(14.dp)
     ) {
         Column(
@@ -213,7 +225,7 @@ private fun MembershipTierIcon(color: Color, label: String) {
             Text(
                 text = label,
                 color = color,
-                fontSize = 11.sp,
+                style = MaterialTheme.typography.labelSmall,
                 fontWeight = FontWeight.SemiBold
             )
         }
@@ -226,9 +238,10 @@ private fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit)
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp)
-            .alpha(if (canRedeem) 1f else 0.48f),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White)
+            .alpha(if (canRedeem) 1f else 0.6f),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        )
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
@@ -237,17 +250,27 @@ private fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit)
             Icon(
                 imageVector = reward.category.icon,
                 contentDescription = null,
-                tint = if (canRedeem) reward.category.accentColor else Color.Gray
+                tint = if (canRedeem) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.outline
             )
             Column(modifier = Modifier.padding(start = 16.dp)) {
-                Text(text = reward.name, fontWeight = FontWeight.Bold)
-                Text(text = "${reward.points} pts", fontSize = 12.sp, color = Color.Gray)
+                Text(
+                    text = reward.name, 
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = "${reward.points} pts", 
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
             }
             Spacer(modifier = Modifier.weight(1f))
             Button(
                 onClick = onRedeem,
                 enabled = canRedeem,
-                colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20))
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary
+                )
             ) {
                 Text("Redeem", fontSize = 12.sp)
             }
@@ -255,8 +278,8 @@ private fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit)
     }
 }
 
-private fun levelColor(level: String): Color = when (level) {
-    "Gold" -> Color(0xFFF9A825)
-    "Silver" -> Color(0xFF78909C)
-    else -> Color(0xFF8D6E63)
+private fun getLevelColor(level: String): Color = when (level) {
+    "Gold" -> Color(0xFFFFD54F)
+    "Silver" -> Color(0xFFB0BEC5)
+    else -> Color(0xFFD7B899)
 }

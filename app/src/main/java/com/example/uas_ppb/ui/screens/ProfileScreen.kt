@@ -1,45 +1,18 @@
 package com.example.uas_ppb.ui.screens
 
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Logout
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.Alignment
 import com.example.uas_ppb.data.Member
 import com.example.uas_ppb.ui.viewmodel.CoffeeViewModel
@@ -79,12 +52,12 @@ fun ProfileScreen(
                         onLogout()
                     }
                 ) {
-                    Text("Ya", color = Color(0xFF1B5E20))
+                    Text("Ya", color = MaterialTheme.colorScheme.primary)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showLogoutDialog = false }) {
-                    Text("Tidak", color = Color.Gray)
+                    Text("Tidak", color = MaterialTheme.colorScheme.outline)
                 }
             }
         )
@@ -93,13 +66,20 @@ fun ProfileScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Profile Settings", color = Color.White, fontWeight = FontWeight.SemiBold) },
+                title = { Text("Profile Settings", fontWeight = FontWeight.SemiBold) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
+                        Icon(
+                            Icons.AutoMirrored.Filled.ArrowBack, 
+                            contentDescription = "Back"
+                        )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B5E20))
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { padding ->
@@ -114,13 +94,26 @@ fun ProfileScreen(
             ) {
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9))
+                    colors = CardDefaults.cardColors(
+                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
+                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
+                    )
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
-                        Text("Member Information", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                        Text(
+                            "Member Information", 
+                            style = MaterialTheme.typography.titleMedium,
+                            fontWeight = FontWeight.Bold
+                        )
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text("Member ID: ${currentMember.memberId}", color = Color(0xFF455A64))
-                        Text("Membership Level: ${currentMember.level}", color = Color(0xFF455A64))
+                        Text(
+                            "Member ID: ${currentMember.memberId}", 
+                            style = MaterialTheme.typography.bodyMedium
+                        )
+                        Text(
+                            "Membership Level: ${currentMember.level}", 
+                            style = MaterialTheme.typography.bodyMedium
+                        )
                     }
                 }
 
@@ -130,9 +123,9 @@ fun ProfileScreen(
                     label = { Text("Full Name") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color(0xFF1B5E20),
-                        focusedLabelColor = Color(0xFF1B5E20)
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary
                     )
                 )
                 OutlinedTextField(
@@ -141,9 +134,9 @@ fun ProfileScreen(
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color(0xFF1B5E20),
-                        focusedLabelColor = Color(0xFF1B5E20)
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary
                     )
                 )
                 OutlinedTextField(
@@ -152,9 +145,9 @@ fun ProfileScreen(
                     label = { Text("Phone Number") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
-                    colors = TextFieldDefaults.colors(
-                        focusedIndicatorColor = Color(0xFF1B5E20),
-                        focusedLabelColor = Color(0xFF1B5E20)
+                    colors = OutlinedTextFieldDefaults.colors(
+                        focusedBorderColor = MaterialTheme.colorScheme.primary,
+                        focusedLabelColor = MaterialTheme.colorScheme.primary
                     )
                 )
 
@@ -171,7 +164,9 @@ fun ProfileScreen(
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = name.isNotBlank() && email.isNotBlank() && phone.isNotBlank(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.primary
+                    )
                 ) {
                     Text("Save Profile")
                 }
@@ -179,7 +174,9 @@ fun ProfileScreen(
                 Button(
                     onClick = { showLogoutDialog = true },
                     modifier = Modifier.fillMaxWidth(),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFB71C1C))
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = MaterialTheme.colorScheme.error
+                    )
                 ) {
                     Icon(
                         imageVector = Icons.AutoMirrored.Filled.Logout,
@@ -188,14 +185,11 @@ fun ProfileScreen(
                     Text("Logout", modifier = Modifier.padding(start = 8.dp))
                 }
             }
-        } ?: Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(padding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.Center
+        } ?: Box(
+            modifier = Modifier.fillMaxSize(),
+            contentAlignment = Alignment.Center
         ) {
-            CircularProgressIndicator(color = Color(0xFF1B5E20))
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
     }
 }

@@ -1,6 +1,5 @@
 package com.example.uas_ppb.ui.screens
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -33,7 +31,7 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF1B5E20)), // Coffee Bliss Green
+            .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -41,18 +39,18 @@ fun SplashScreen(onSplashFinished: () -> Unit) {
                 imageVector = Icons.Default.Coffee,
                 contentDescription = "Coffee Bliss Logo",
                 modifier = Modifier.size(100.dp),
-                tint = Color.White
+                tint = MaterialTheme.colorScheme.onPrimary
             )
             Spacer(modifier = Modifier.height(16.dp))
             Text(
                 text = "COFFEE BLISS",
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onPrimary,
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold
             )
             Text(
                 text = "Membership Card App",
-                color = Color.White.copy(alpha = 0.8f),
+                color = MaterialTheme.colorScheme.onPrimary.copy(alpha = 0.8f),
                 fontSize = 16.sp
             )
         }

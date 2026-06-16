@@ -2,43 +2,15 @@ package com.example.uas_ppb.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Coffee
-import androidx.compose.material.icons.filled.Email
-import androidx.compose.material.icons.filled.Lock
-import androidx.compose.material.icons.filled.Person
-import androidx.compose.material.icons.filled.Phone
-import androidx.compose.material.icons.filled.Visibility
-import androidx.compose.material.icons.filled.VisibilityOff
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.OutlinedTextFieldDefaults
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
+import androidx.compose.material.icons.filled.*
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -79,7 +51,7 @@ fun LoginRegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF1F8E9)), // Light green background
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -94,20 +66,20 @@ fun LoginRegisterScreen(
             Icon(
                 imageVector = Icons.Default.Coffee,
                 contentDescription = null,
-                tint = Color(0xFF1B5E20),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(72.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = "Coffee Bliss",
-                fontSize = 28.sp,
+                style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF1B5E20)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = if (isLoginMode) "Sign in to see your membership" else "Join membership card to get rewards",
-                fontSize = 14.sp,
-                color = Color.Gray,
+                style = MaterialTheme.typography.bodySmall,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 modifier = Modifier.padding(bottom = 24.dp)
             )
 
@@ -115,7 +87,9 @@ fun LoginRegisterScreen(
             Card(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
-                colors = CardDefaults.cardColors(containerColor = Color.White),
+                colors = CardDefaults.cardColors(
+                    containerColor = MaterialTheme.colorScheme.surface
+                ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
                 Column(
@@ -124,9 +98,9 @@ fun LoginRegisterScreen(
                 ) {
                     Text(
                         text = if (isLoginMode) "LOGIN" else "REGISTER",
-                        fontSize = 20.sp,
+                        style = MaterialTheme.typography.titleLarge,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF1B5E20),
+                        color = MaterialTheme.colorScheme.primary,
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
@@ -138,12 +112,12 @@ fun LoginRegisterScreen(
                                 errorMessage = null
                             },
                             label = { Text("Email atau No. Telepon") },
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF1B5E20),
-                                focusedLabelColor = Color(0xFF1B5E20)
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
                             )
                         )
                     } else {
@@ -154,12 +128,12 @@ fun LoginRegisterScreen(
                                 errorMessage = null
                             },
                             label = { Text("Nama Lengkap") },
-                            leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF1B5E20),
-                                focusedLabelColor = Color(0xFF1B5E20)
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
                             )
                         )
                     }
@@ -174,13 +148,13 @@ fun LoginRegisterScreen(
                                 errorMessage = null
                             },
                             label = { Text("Email") },
-                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF1B5E20),
-                                focusedLabelColor = Color(0xFF1B5E20)
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
                             )
                         )
 
@@ -193,13 +167,13 @@ fun LoginRegisterScreen(
                                 errorMessage = null
                             },
                             label = { Text("No. Telepon") },
-                            leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF1B5E20),
-                                focusedLabelColor = Color(0xFF1B5E20)
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
                             )
                         )
                     }
@@ -214,20 +188,20 @@ fun LoginRegisterScreen(
                             errorMessage = null
                         },
                         label = { Text("Password") },
-                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                        leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                         singleLine = true,
                         visualTransformation = if (passwordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                         trailingIcon = {
                             val image = if (passwordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                             IconButton(onClick = { passwordVisible = !passwordVisible }) {
-                                Icon(image, contentDescription = null, tint = Color(0xFF1B5E20))
+                                Icon(image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             }
                         },
                         modifier = Modifier.fillMaxWidth(),
                         colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFF1B5E20),
-                            focusedLabelColor = Color(0xFF1B5E20)
+                            focusedBorderColor = MaterialTheme.colorScheme.primary,
+                            focusedLabelColor = MaterialTheme.colorScheme.primary
                         )
                     )
 
@@ -241,20 +215,20 @@ fun LoginRegisterScreen(
                                 errorMessage = null
                             },
                             label = { Text("Confirm Password") },
-                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            leadingIcon = { Icon(Icons.Default.Lock, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
                             visualTransformation = if (confirmPasswordVisible) VisualTransformation.None else PasswordVisualTransformation(),
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
                             trailingIcon = {
                                 val image = if (confirmPasswordVisible) Icons.Default.Visibility else Icons.Default.VisibilityOff
                                 IconButton(onClick = { confirmPasswordVisible = !confirmPasswordVisible }) {
-                                    Icon(image, contentDescription = null, tint = Color(0xFF1B5E20))
+                                    Icon(image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                                 }
                             },
                             modifier = Modifier.fillMaxWidth(),
                             colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = Color(0xFF1B5E20),
-                                focusedLabelColor = Color(0xFF1B5E20)
+                                focusedBorderColor = MaterialTheme.colorScheme.primary,
+                                focusedLabelColor = MaterialTheme.colorScheme.primary
                             )
                         )
                     }
@@ -264,8 +238,8 @@ fun LoginRegisterScreen(
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
                             text = errorMessage!!,
-                            color = Color.Red,
-                            fontSize = 14.sp,
+                            color = MaterialTheme.colorScheme.error,
+                            style = MaterialTheme.typography.bodySmall,
                             fontWeight = FontWeight.Medium
                         )
                     }
@@ -333,13 +307,15 @@ fun LoginRegisterScreen(
                         },
                         modifier = Modifier.fillMaxWidth(),
                         shape = RoundedCornerShape(8.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20))
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        )
                     ) {
                         Text(
                             text = if (isLoading) "Loading..." else if (isLoginMode) "LOGIN" else "REGISTER",
-                            fontSize = 16.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color.White
+                            style = MaterialTheme.typography.labelLarge,
+                            fontWeight = FontWeight.Bold
                         )
                     }
                 }
@@ -362,8 +338,8 @@ fun LoginRegisterScreen(
             ) {
                 Text(
                     text = if (isLoginMode) "Belum punya akun? Registrasi di sini" else "Sudah punya akun? Login di sini",
-                    color = Color(0xFF1B5E20),
-                    fontSize = 14.sp
+                    color = MaterialTheme.colorScheme.primary,
+                    style = MaterialTheme.typography.bodyMedium
                 )
             }
         }

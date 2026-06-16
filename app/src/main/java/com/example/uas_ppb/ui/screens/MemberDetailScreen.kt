@@ -3,46 +3,20 @@ package com.example.uas_ppb.ui.screens
 import android.graphics.Bitmap
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.CardMembership
 import androidx.compose.material.icons.filled.ManageAccounts
 import androidx.compose.material.icons.filled.QrCode2
 import androidx.compose.material.icons.filled.Redeem
 import androidx.compose.material.icons.filled.ShoppingCart
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -57,6 +31,8 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.EncodeHintType
 import com.google.zxing.MultiFormatWriter
 import com.google.zxing.common.BitMatrix
+import java.text.NumberFormat
+import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -84,21 +60,22 @@ fun MemberDetailScreen(
                 title = {
                     Text(
                         text = "Membership Profile",
-                        color = Color.White,
-                        fontWeight = FontWeight.SemiBold,
-                        letterSpacing = 0.3.sp
+                        fontWeight = FontWeight.SemiBold
                     )
                 },
                 actions = {
                     IconButton(onClick = onProfileClick) {
                         Icon(
                             imageVector = Icons.Default.ManageAccounts,
-                            contentDescription = "Profile Settings",
-                            tint = Color.White
+                            contentDescription = "Profile Settings"
                         )
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color(0xFF1B5E20))
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
+                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
+                )
             )
         }
     ) { padding ->
@@ -120,7 +97,9 @@ fun MemberDetailScreen(
                         Button(
                             onClick = onAddTransaction,
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20))
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.primary
+                            )
                         ) {
                             Text("Add Transaction")
                         }
@@ -128,20 +107,30 @@ fun MemberDetailScreen(
                         Button(
                             onClick = onRedeemReward,
                             modifier = Modifier.weight(1f),
-                            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE65100))
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = MaterialTheme.colorScheme.tertiary
+                            )
                         ) {
                             Text("Redeem Reward")
                         }
                     }
 
                     Spacer(modifier = Modifier.height(24.dp))
-                    Text(text = "Points & Rewards History", fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                    Text(
+                        text = "Points & Rewards History",
+                        style = MaterialTheme.typography.titleMedium,
+                        color = MaterialTheme.colorScheme.onBackground
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
                 }
 
                 if (transactions.isEmpty()) {
                     item {
-                        Text("No history yet.", color = Color.Gray, modifier = Modifier.padding(vertical = 16.dp))
+                        Text(
+                            text = "No history yet.",
+                            color = MaterialTheme.colorScheme.outline,
+                            modifier = Modifier.padding(vertical = 16.dp)
+                        )
                     }
                 } else {
                     items(transactions) { tx ->
@@ -150,7 +139,7 @@ fun MemberDetailScreen(
                 }
             }
         } ?: Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Color(0xFF1B5E20))
+            CircularProgressIndicator(color = MaterialTheme.colorScheme.primary)
         }
     }
 }
@@ -166,26 +155,44 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
-        colors = CardDefaults.cardColors(containerColor = Color(0xFF1B5E20)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.primaryContainer,
+            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
         Column(modifier = Modifier.padding(24.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Icon(Icons.Default.CardMembership, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
+                Icon(
+                    Icons.Default.CardMembership,
+                    contentDescription = null,
+                    modifier = Modifier.size(32.dp)
+                )
                 Spacer(modifier = Modifier.size(8.dp))
                 Column {
-                    Text("COFFEE BLISS", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(
+                        "COFFEE BLISS",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
                     Text(
                         text = "Member Privileges",
-                        color = Color.White.copy(alpha = 0.75f),
-                        fontSize = 12.sp,
-                        letterSpacing = 0.8.sp
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
                     )
                 }
             }
             Spacer(modifier = Modifier.height(24.dp))
-            Text(text = member.name, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
-            Text(text = member.memberId, color = Color.White.copy(alpha = 0.7f), fontSize = 16.sp)
+            Text(
+                text = member.name,
+                style = MaterialTheme.typography.headlineMedium,
+                fontWeight = FontWeight.Bold
+            )
+            Text(
+                text = member.memberId,
+                style = MaterialTheme.typography.bodyMedium,
+                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+            )
 
             Spacer(modifier = Modifier.height(32.dp))
 
@@ -195,26 +202,30 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                 verticalAlignment = Alignment.Bottom
             ) {
                 Column {
-                    Text(text = "POINTS", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-                    Text(text = member.points.toString(), color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                    Text(
+                        text = "POINTS",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    )
+                    Text(
+                        text = member.points.toString(),
+                        style = MaterialTheme.typography.displaySmall,
+                        fontWeight = FontWeight.Bold
+                    )
                     if (member.nextLevel != null) {
-                        Spacer(modifier = Modifier.height(4.dp))
                         Text(
                             text = "${member.pointsToNextLevel} pts to ${member.nextLevel}",
-                            color = Color.White.copy(alpha = 0.8f),
-                            fontSize = 12.sp
-                        )
-                    } else {
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Text(
-                            text = "Top membership tier unlocked",
-                            color = Color.White.copy(alpha = 0.8f),
-                            fontSize = 12.sp
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
                         )
                     }
                 }
                 Column(horizontalAlignment = Alignment.End) {
-                    Text(text = "LEVEL", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
+                    Text(
+                        text = "LEVEL",
+                        style = MaterialTheme.typography.labelSmall,
+                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                    )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
                             imageVector = Icons.Default.AutoAwesome,
@@ -225,8 +236,8 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                         Spacer(modifier = Modifier.size(6.dp))
                         Text(
                             text = member.level,
+                            style = MaterialTheme.typography.titleMedium,
                             color = levelColor,
-                            fontSize = 18.sp,
                             fontWeight = FontWeight.SemiBold
                         )
                     }
@@ -234,7 +245,6 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                 Icon(
                     Icons.Default.QrCode2,
                     contentDescription = "Show QR Code",
-                    tint = Color.White,
                     modifier = Modifier
                         .size(64.dp)
                         .clickable(onClick = onQrClick)
@@ -246,41 +256,50 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
 
 @Composable
 private fun QrMemberDialog(member: Member, onDismiss: () -> Unit) {
-    val qrContent = "memberId=${member.memberId};name=${member.name};email=${member.email};phone=${member.phone};level=${member.level}"
+    val qrContent = "memberId=${member.memberId};name=${member.name}"
     val qrBitmap = remember(qrContent) { generateQrBitmap(qrContent, 720) }
 
     androidx.compose.ui.window.Dialog(onDismissRequest = onDismiss) {
         Surface(
             shape = RoundedCornerShape(24.dp),
-            color = Color.White,
+            color = MaterialTheme.colorScheme.surface,
             tonalElevation = 8.dp
         ) {
             Column(
                 modifier = Modifier.padding(24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text("Member QR Pass", fontWeight = FontWeight.Bold, fontSize = 22.sp, color = Color(0xFF1B5E20))
-                Spacer(modifier = Modifier.height(8.dp))
-                Text(member.name, fontWeight = FontWeight.SemiBold, fontSize = 18.sp)
-                Text(member.memberId, color = Color.Gray)
-                Spacer(modifier = Modifier.height(20.dp))
-                Image(
-                    bitmap = qrBitmap.asImageBitmap(),
-                    contentDescription = "Member QR Code",
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(280.dp)
+                Text(
+                    "Member QR Pass",
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary
                 )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(member.name, style = MaterialTheme.typography.titleMedium)
+                Text(member.memberId, color = MaterialTheme.colorScheme.outline)
+                Spacer(modifier = Modifier.height(20.dp))
+                
+                Surface(
+                    color = Color.White,
+                    shape = RoundedCornerShape(12.dp),
+                    modifier = Modifier.padding(4.dp)
+                ) {
+                    Image(
+                        bitmap = qrBitmap.asImageBitmap(),
+                        contentDescription = "Member QR Code",
+                        modifier = Modifier
+                            .size(240.dp)
+                            .padding(8.dp)
+                    )
+                }
+                
                 Spacer(modifier = Modifier.height(20.dp))
                 MemberInfoRow("Member ID", member.memberId)
-                MemberInfoRow("Name", member.name)
-//                MemberInfoRow("Email", member.email)
-//                MemberInfoRow("Phone", member.phone)
                 MemberInfoRow("Level", member.level)
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = onDismiss,
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF1B5E20)),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text("Close")
@@ -298,15 +317,15 @@ private fun MemberInfoRow(label: String, value: String) {
             .padding(vertical = 4.dp),
         horizontalArrangement = Arrangement.SpaceBetween
     ) {
-        Text(label, color = Color.Gray, style = MaterialTheme.typography.bodyMedium)
-        Text(value, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyMedium)
+        Text(label, color = MaterialTheme.colorScheme.outline, style = MaterialTheme.typography.bodyMedium)
+        Text(value, fontWeight = FontWeight.Medium, style = MaterialTheme.typography.bodyMedium, color = MaterialTheme.colorScheme.onSurface)
     }
 }
 
 @Composable
 fun TransactionItem(transaction: Transaction) {
     val isRedeem = transaction.pointEarned < 0
-    val pointColor = if (isRedeem) Color.Red else Color(0xFF1B5E20)
+    val pointColor = if (isRedeem) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.primary
     val icon = if (isRedeem) Icons.Default.Redeem else Icons.Default.ShoppingCart
     val pointPrefix = if (transaction.pointEarned > 0) "+" else ""
 
@@ -314,30 +333,54 @@ fun TransactionItem(transaction: Transaction) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 4.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceVariant
+        ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Row(modifier = Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(icon, contentDescription = null, tint = if (isRedeem) Color(0xFFE65100) else Color(0xFF1B5E20))
+            Icon(
+                icon, 
+                contentDescription = null, 
+                tint = if (isRedeem) MaterialTheme.colorScheme.tertiary else MaterialTheme.colorScheme.primary
+            )
             Spacer(modifier = Modifier.size(16.dp))
             Column {
-                Text(text = transaction.title, fontWeight = FontWeight.Bold)
-                Text(text = transaction.displayDate, fontSize = 12.sp, color = Color.Gray)
+                Text(
+                    text = transaction.title, 
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+                Text(
+                    text = transaction.date,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
+                )
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(horizontalAlignment = Alignment.End) {
                 if (transaction.amount > 0) {
-                    Text(text = "Rp ${transaction.amount.toInt()}", fontWeight = FontWeight.Bold)
+                    Text(
+                        text = formatToRupiah(transaction.amount), 
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
                 }
                 Text(
                     text = "$pointPrefix${transaction.pointEarned} pts",
                     color = pointColor,
-                    fontSize = 14.sp,
+                    style = MaterialTheme.typography.titleSmall,
                     fontWeight = FontWeight.Bold
                 )
             }
         }
     }
+}
+
+// Fungsi Helper untuk format Rupiah
+fun formatToRupiah(amount: Double): String {
+    val formatter = NumberFormat.getInstance(Locale("id", "ID"))
+    return "Rp. ${formatter.format(amount.toLong())}"
 }
 
 private fun generateQrBitmap(content: String, size: Int): Bitmap {
