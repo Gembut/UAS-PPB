@@ -63,6 +63,7 @@ fun LoginRegisterScreen(
     val coroutineScope = rememberCoroutineScope()
 
     var isLoginMode by remember { mutableStateOf(true) }
+    var loginIdentifier by remember { mutableStateOf("") }
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -129,22 +130,39 @@ fun LoginRegisterScreen(
                         modifier = Modifier.padding(bottom = 16.dp)
                     )
 
-                    // Name Field
-                    OutlinedTextField(
-                        value = name,
-                        onValueChange = {
-                            name = it
-                            errorMessage = null
-                        },
-                        label = { Text("Nama Lengkap") },
-                        leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFF1B5E20)) },
-                        singleLine = true,
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = Color(0xFF1B5E20),
-                            focusedLabelColor = Color(0xFF1B5E20)
+                    if (isLoginMode) {
+                        OutlinedTextField(
+                            value = loginIdentifier,
+                            onValueChange = {
+                                loginIdentifier = it
+                                errorMessage = null
+                            },
+                            label = { Text("Email atau No. Telepon") },
+                            leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFF1B5E20),
+                                focusedLabelColor = Color(0xFF1B5E20)
+                            )
                         )
-                    )
+                    } else {
+                        OutlinedTextField(
+                            value = name,
+                            onValueChange = {
+                                name = it
+                                errorMessage = null
+                            },
+                            label = { Text("Nama Lengkap") },
+                            leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = Color(0xFF1B5E20)) },
+                            singleLine = true,
+                            modifier = Modifier.fillMaxWidth(),
+                            colors = OutlinedTextFieldDefaults.colors(
+                                focusedBorderColor = Color(0xFF1B5E20),
+                                focusedLabelColor = Color(0xFF1B5E20)
+                            )
+                        )
+                    }
 
                     // Email Field (Register Only)
                     if (!isLoginMode) {
@@ -260,12 +278,12 @@ fun LoginRegisterScreen(
                             if (isLoading) return@Button
                             errorMessage = null
 
-                            if (name.isBlank() || password.isBlank()) {
-                                errorMessage = "Semua field harus diisi"
+                            if (isLoginMode && (loginIdentifier.isBlank() || password.isBlank())) {
+                                errorMessage = "Email/no. telepon dan password harus diisi"
                                 return@Button
                             }
 
-                            if (!isLoginMode && (email.isBlank() || phone.isBlank() || confirmPassword.isBlank())) {
+                            if (!isLoginMode && (name.isBlank() || email.isBlank() || phone.isBlank() || password.isBlank() || confirmPassword.isBlank())) {
                                 errorMessage = "Semua field registrasi harus diisi"
                                 return@Button
                             }
@@ -278,28 +296,32 @@ fun LoginRegisterScreen(
                             isLoading = true
                             coroutineScope.launch {
                                 if (isLoginMode) {
-                                    when (val result = viewModel.login(name, password)) {
+                                    when (val result = viewModel.login(loginIdentifier.trim(), password)) {
                                         is LoginResult.Success -> {
                                             Toast.makeText(context, "Login Berhasil!", Toast.LENGTH_SHORT).show()
                                             onLoginSuccess(result.memberId)
                                         }
                                         LoginResult.InvalidCredentials -> {
-                                            errorMessage = "Nama atau password salah"
+                                            errorMessage = "Email/no. telepon atau password salah"
                                         }
                                         LoginResult.EmptyFields -> {
-                                            errorMessage = "Nama dan password tidak boleh kosong"
+                                            errorMessage = "Email/no. telepon dan password tidak boleh kosong"
                                         }
                                     }
                                 } else {
-                                    when (viewModel.register(name, email, phone, password)) {
+                                    when (viewModel.register(name.trim(), email.trim(), phone.trim(), password)) {
                                         RegisterResult.Success -> {
                                             Toast.makeText(context, "Registrasi Berhasil! Silakan Login.", Toast.LENGTH_SHORT).show()
                                             isLoginMode = true
+                                            loginIdentifier = ""
+                                            name = ""
+                                            email = ""
+                                            phone = ""
                                             password = ""
                                             confirmPassword = ""
                                         }
                                         RegisterResult.MemberAlreadyExists -> {
-                                            errorMessage = "Nama sudah terdaftar sebagai member"
+                                            errorMessage = "Email atau no. telepon sudah terdaftar"
                                         }
                                         RegisterResult.EmptyFields -> {
                                             errorMessage = "Semua field harus diisi"
@@ -330,6 +352,7 @@ fun LoginRegisterScreen(
                 onClick = {
                     isLoginMode = !isLoginMode
                     errorMessage = null
+                    loginIdentifier = ""
                     name = ""
                     email = ""
                     phone = ""

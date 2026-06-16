@@ -9,6 +9,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.example.uas_ppb.ui.screens.LoginRegisterScreen
 import com.example.uas_ppb.ui.screens.MemberDetailScreen
+import com.example.uas_ppb.ui.screens.ProfileScreen
 import com.example.uas_ppb.ui.screens.RewardScreen
 import com.example.uas_ppb.ui.screens.SplashScreen
 import com.example.uas_ppb.ui.screens.TransactionScreen
@@ -25,6 +26,9 @@ sealed class Screen(val route: String) {
     }
     object Reward : Screen("reward/{memberId}") {
         fun createRoute(memberId: Int) = "reward/$memberId"
+    }
+    object Profile : Screen("profile/{memberId}") {
+        fun createRoute(memberId: Int) = "profile/$memberId"
     }
 }
 
@@ -73,11 +77,7 @@ fun CoffeeNavGraph(
             MemberDetailScreen(
                 memberId = memberId,
                 viewModel = viewModel,
-                onLogoutClick = {
-                    navController.navigate(Screen.LoginRegister.route) {
-                        popUpTo(Screen.MemberDetail.route) { inclusive = true }
-                    }
-                },
+                onProfileClick = { navController.navigate(Screen.Profile.createRoute(memberId)) },
                 onAddTransaction = { navController.navigate(Screen.Transaction.createRoute(memberId)) },
                 onRedeemReward = { navController.navigate(Screen.Reward.createRoute(memberId)) }
             )
@@ -102,6 +102,22 @@ fun CoffeeNavGraph(
                 memberId = memberId,
                 viewModel = viewModel,
                 onBack = { navController.popBackStack() }
+            )
+        }
+        composable(
+            route = Screen.Profile.route,
+            arguments = listOf(navArgument("memberId") { type = NavType.IntType })
+        ) { backStackEntry ->
+            val memberId = backStackEntry.arguments?.getInt("memberId") ?: return@composable
+            ProfileScreen(
+                memberId = memberId,
+                viewModel = viewModel,
+                onBack = { navController.popBackStack() },
+                onLogout = {
+                    navController.navigate(Screen.LoginRegister.route) {
+                        popUpTo(navController.graph.id) { inclusive = true }
+                    }
+                }
             )
         }
     }

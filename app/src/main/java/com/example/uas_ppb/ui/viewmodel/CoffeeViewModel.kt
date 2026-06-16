@@ -68,6 +68,12 @@ class CoffeeViewModel(
         }
     }
 
+    fun updateMemberProfile(member: Member) {
+        viewModelScope.launch {
+            repository.updateMember(member)
+        }
+    }
+
     fun redeemReward(memberId: Int, rewardName: String, points: Int) {
         viewModelScope.launch {
             repository.redeemReward(memberId, rewardName, points)
@@ -78,7 +84,7 @@ class CoffeeViewModel(
         if (name.isBlank() || email.isBlank() || phone.isBlank() || password.isBlank()) {
             return RegisterResult.EmptyFields
         }
-        val existingMember = repository.getMemberByName(name)
+        val existingMember = repository.getMemberByEmailOrPhone(email, phone)
         if (existingMember != null) {
             return RegisterResult.MemberAlreadyExists
         }
@@ -87,11 +93,11 @@ class CoffeeViewModel(
         return RegisterResult.Success
     }
 
-    suspend fun login(name: String, password: String): LoginResult {
-        if (name.isBlank() || password.isBlank()) {
+    suspend fun login(identifier: String, password: String): LoginResult {
+        if (identifier.isBlank() || password.isBlank()) {
             return LoginResult.EmptyFields
         }
-        val member = repository.getMemberByName(name)
+        val member = repository.getMemberByEmailOrPhone(identifier)
         if (member == null || member.password != password) {
             return LoginResult.InvalidCredentials
         }

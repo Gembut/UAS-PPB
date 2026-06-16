@@ -22,14 +22,7 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.example.uas_ppb.data.Member
 import com.example.uas_ppb.ui.viewmodel.CoffeeViewModel
-
-private enum class MembershipLevel(val rank: Int) {
-    BRONZE(1),
-    SILVER(2),
-    GOLD(3)
-}
 
 private enum class RewardCategory(
     val title: String,
@@ -44,27 +37,20 @@ private enum class RewardCategory(
 private data class Reward(
     val name: String,
     val points: Int,
-    val category: RewardCategory,
-    val minimumLevel: MembershipLevel
+    val category: RewardCategory
 )
 
 private val rewardList = listOf(
-    Reward("Espresso Gratis", 50, RewardCategory.DRINK, MembershipLevel.BRONZE),
-    Reward("Americano Gratis", 80, RewardCategory.DRINK, MembershipLevel.BRONZE),
-    Reward("Croissant Butter", 90, RewardCategory.FOOD, MembershipLevel.BRONZE),
-    Reward("Cappuccino Signature", 120, RewardCategory.DRINK, MembershipLevel.SILVER),
-    Reward("Cheese Danish", 140, RewardCategory.FOOD, MembershipLevel.SILVER),
-    Reward("Tumbler Coffee Bliss", 220, RewardCategory.MERCH, MembershipLevel.SILVER),
-    Reward("Latte Premium", 180, RewardCategory.DRINK, MembershipLevel.GOLD),
-    Reward("Brunch Platter", 260, RewardCategory.FOOD, MembershipLevel.GOLD),
-    Reward("Exclusive Tote Bag", 320, RewardCategory.MERCH, MembershipLevel.GOLD)
+    Reward("Espresso", 50, RewardCategory.DRINK),
+    Reward("Americano", 80, RewardCategory.DRINK),
+    Reward("Croissant Butter", 90, RewardCategory.FOOD),
+    Reward("Cappuccino Signature", 120, RewardCategory.DRINK),
+    Reward("Cheese Danish", 140, RewardCategory.FOOD),
+    Reward("Latte Premium", 180, RewardCategory.DRINK),
+    Reward("Tumbler Coffee Bliss", 220, RewardCategory.MERCH),
+    Reward("Brunch Platter", 260, RewardCategory.FOOD),
+    Reward("Exclusive Tote Bag", 320, RewardCategory.MERCH)
 )
-
-private fun Member.toMembershipLevel(): MembershipLevel = when (level) {
-    "Gold" -> MembershipLevel.GOLD
-    "Silver" -> MembershipLevel.SILVER
-    else -> MembershipLevel.BRONZE
-}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,11 +71,6 @@ fun RewardScreen(
                             color = Color.White,
                             fontWeight = FontWeight.SemiBold
                         )
-                        Text(
-                            text = "Choose benefits based on your membership tier",
-                            color = Color.White.copy(alpha = 0.82f),
-                            fontSize = 12.sp
-                        )
                     }
                 },
                 navigationIcon = {
@@ -108,7 +89,6 @@ fun RewardScreen(
                 .padding(16.dp)
         ) {
             member?.let { m ->
-                val memberLevel = m.toMembershipLevel()
                 val rewardsByCategory = rewardList.groupBy { it.category }
 
                 Card(
@@ -157,8 +137,7 @@ fun RewardScreen(
                                 RewardCategoryHeader(category = category)
                             }
                             items(rewards) { reward ->
-                                val canRedeem =
-                                    m.points >= reward.points && memberLevel.rank >= reward.minimumLevel.rank
+                                val canRedeem = m.points >= reward.points
                                 RewardItem(
                                     reward = reward,
                                     canRedeem = canRedeem,

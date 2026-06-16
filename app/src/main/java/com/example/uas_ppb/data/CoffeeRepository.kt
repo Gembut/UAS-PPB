@@ -16,6 +16,8 @@ class CoffeeRepository(
 
     suspend fun insertMember(member: Member): Long = memberDao.insert(member)
 
+    suspend fun updateMember(member: Member) = memberDao.update(member)
+
     private fun getCurrentDate(): String {
         return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
     }
@@ -52,4 +54,10 @@ class CoffeeRepository(
     suspend fun registerMember(member: Member): Long = memberDao.insert(member)
     
     suspend fun getMemberByName(name: String): Member? = memberDao.getMemberByName(name)
+
+    suspend fun getMemberByEmailOrPhone(identifier: String): Member? =
+        memberDao.getMemberByEmailOrPhone(identifier)
+
+    suspend fun getMemberByEmailOrPhone(email: String, phone: String): Member? =
+        memberDao.getMemberByEmailOrPhone(email, phone)
 }
