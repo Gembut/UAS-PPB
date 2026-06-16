@@ -61,13 +61,9 @@ fun RewardScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Reward Collection",
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
+            AppTopBar(
+                title = "Reward Collection",
+                subtitle = "Coffee Bliss",
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -75,12 +71,7 @@ fun RewardScreen(
                             contentDescription = "Back"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         }
     ) { padding ->
@@ -92,12 +83,15 @@ fun RewardScreen(
         ) {
             member?.let { m ->
                 val rewardsByCategory = rewardList.groupBy { it.category }
+                val tierColor = getLevelColor(m.level)
+                val cardBackground = Color(0xFF17362C)
+                val cardForeground = Color.White
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+                        containerColor = cardBackground,
+                        contentColor = cardForeground
                     ),
                     shape = RoundedCornerShape(20.dp)
                 ) {
@@ -112,21 +106,22 @@ fun RewardScreen(
                             Text(
                                 text = "Your Current Points",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                                color = cardForeground.copy(alpha = 0.76f)
                             )
                             Text(
                                 text = "${m.points} pts",
                                 style = MaterialTheme.typography.headlineMedium,
-                                fontWeight = FontWeight.Bold
+                                fontWeight = FontWeight.Bold,
+                                color = cardForeground
                             )
                             Spacer(modifier = Modifier.height(8.dp))
                             MembershipLevelChip(
                                 label = "${m.level} Member", 
-                                color = getLevelColor(m.level)
+                                color = tierColor
                             )
                         }
                         MembershipTierIcon(
-                            color = getLevelColor(m.level),
+                            color = tierColor,
                             label = m.level
                         )
                     }
@@ -192,7 +187,7 @@ private fun RewardCategoryHeader(category: RewardCategory) {
 @Composable
 private fun MembershipLevelChip(label: String, color: Color) {
     Surface(
-        color = color.copy(alpha = 0.2f),
+        color = color.copy(alpha = 0.18f),
         shape = MaterialTheme.shapes.small
     ) {
         Text(
@@ -208,7 +203,7 @@ private fun MembershipLevelChip(label: String, color: Color) {
 @Composable
 private fun MembershipTierIcon(color: Color, label: String) {
     Surface(
-        color = color.copy(alpha = 0.2f),
+        color = color.copy(alpha = 0.18f),
         shape = RoundedCornerShape(14.dp)
     ) {
         Column(
@@ -279,7 +274,7 @@ private fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit)
 }
 
 private fun getLevelColor(level: String): Color = when (level) {
-    "Gold" -> Color(0xFFFFD54F)
-    "Silver" -> Color(0xFFB0BEC5)
-    else -> Color(0xFFD7B899)
+    "Gold" -> Color(0xFFFFE082)
+    "Silver" -> Color(0xFFF5F7FA)
+    else -> Color(0xFFFFCC80)
 }

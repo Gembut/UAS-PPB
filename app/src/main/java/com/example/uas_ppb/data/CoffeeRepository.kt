@@ -60,4 +60,8 @@ class CoffeeRepository(
 
     suspend fun getMemberByEmailOrPhone(email: String, phone: String): Member? =
         memberDao.getMemberByEmailOrPhone(email, phone)
+
+    suspend fun getMemberByEmail(email: String): Member? = memberDao.getMemberByEmail(email)
+
+    suspend fun getMemberByPhone(phone: String): Member? = memberDao.getMemberByPhone(phone)
 }

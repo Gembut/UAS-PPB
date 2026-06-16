@@ -1,6 +1,7 @@
 package com.example.uas_ppb.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -14,8 +15,9 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.ui.Alignment
-import com.example.uas_ppb.data.Member
 import com.example.uas_ppb.ui.viewmodel.CoffeeViewModel
+import com.example.uas_ppb.ui.viewmodel.UpdateProfileResult
+import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -26,9 +28,11 @@ fun ProfileScreen(
     onLogout: () -> Unit
 ) {
     val member by viewModel.getMember(memberId).collectAsState(initial = null)
+    val coroutineScope = rememberCoroutineScope()
     var name by remember { mutableStateOf("") }
     var email by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
+    var errorMessage by remember { mutableStateOf<String?>(null) }
     var showLogoutDialog by remember { mutableStateOf(false) }
 
     LaunchedEffect(member?.id) {
@@ -36,6 +40,7 @@ fun ProfileScreen(
             name = it.name
             email = it.email
             phone = it.phone
+            errorMessage = null
         }
     }
 
@@ -65,8 +70,9 @@ fun ProfileScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("Profile Settings", fontWeight = FontWeight.SemiBold) },
+            AppTopBar(
+                title = "Profile Settings",
+                subtitle = "Coffee Bliss",
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -74,12 +80,7 @@ fun ProfileScreen(
                             contentDescription = "Back"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         }
     ) { padding ->
@@ -95,9 +96,10 @@ fun ProfileScreen(
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(
-                        containerColor = MaterialTheme.colorScheme.secondaryContainer,
-                        contentColor = MaterialTheme.colorScheme.onSecondaryContainer
-                    )
+                        containerColor = Color(0xFF17362C),
+                        contentColor = Color.White
+                    ),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
                     Column(modifier = Modifier.padding(16.dp)) {
                         Text(
@@ -108,18 +110,23 @@ fun ProfileScreen(
                         Spacer(modifier = Modifier.height(8.dp))
                         Text(
                             "Member ID: ${currentMember.memberId}", 
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.82f)
                         )
                         Text(
                             "Membership Level: ${currentMember.level}", 
-                            style = MaterialTheme.typography.bodyMedium
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.White.copy(alpha = 0.82f)
                         )
                     }
                 }
 
                 OutlinedTextField(
                     value = name,
-                    onValueChange = { name = it },
+                    onValueChange = {
+                        name = it
+                        errorMessage = null
+                    },
                     label = { Text("Full Name") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -130,7 +137,10 @@ fun ProfileScreen(
                 )
                 OutlinedTextField(
                     value = email,
-                    onValueChange = { email = it },
+                    onValueChange = {
+                        email = it
+                        errorMessage = null
+                    },
                     label = { Text("Email") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -141,7 +151,10 @@ fun ProfileScreen(
                 )
                 OutlinedTextField(
                     value = phone,
-                    onValueChange = { phone = it },
+                    onValueChange = {
+                        phone = it
+                        errorMessage = null
+                    },
                     label = { Text("Phone Number") },
                     modifier = Modifier.fillMaxWidth(),
                     singleLine = true,
@@ -151,16 +164,38 @@ fun ProfileScreen(
                     )
                 )
 
+                if (errorMessage != null) {
+                    Text(
+                        text = errorMessage!!,
+                        color = MaterialTheme.colorScheme.error,
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                }
+
                 Button(
                     onClick = {
-                        viewModel.updateMemberProfile(
-                            currentMember.copy(
-                                name = name.trim(),
-                                email = email.trim(),
-                                phone = phone.trim()
-                            )
-                        )
-                        onBack()
+                        coroutineScope.launch {
+                            when (
+                                viewModel.updateMemberProfile(
+                                    currentMember.copy(
+                                        name = name.trim(),
+                                        email = email.trim(),
+                                        phone = phone.trim()
+                                    )
+                                )
+                            ) {
+                                UpdateProfileResult.Success -> onBack()
+                                UpdateProfileResult.EmptyFields -> {
+                                    errorMessage = "Semua field profile harus diisi"
+                                }
+                                UpdateProfileResult.EmailAlreadyExists -> {
+                                    errorMessage = "Email sudah terdaftar"
+                                }
+                                UpdateProfileResult.PhoneAlreadyExists -> {
+                                    errorMessage = "Nomor telepon sudah terdaftar"
+                                }
+                            }
+                        }
                     },
                     modifier = Modifier.fillMaxWidth(),
                     enabled = name.isNotBlank() && email.isNotBlank() && phone.isNotBlank(),

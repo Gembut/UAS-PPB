@@ -51,7 +51,7 @@ fun LoginRegisterScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background),
+            .background(Color(0xFFF4F0E8)),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -66,7 +66,7 @@ fun LoginRegisterScreen(
             Icon(
                 imageVector = Icons.Default.Coffee,
                 contentDescription = null,
-                tint = MaterialTheme.colorScheme.primary,
+                tint = Color(0xFF17362C),
                 modifier = Modifier.size(72.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +74,7 @@ fun LoginRegisterScreen(
                 text = "Coffee Bliss",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = MaterialTheme.colorScheme.primary
+                color = Color(0xFF17362C)
             )
             Text(
                 text = if (isLoginMode) "Sign in to see your membership" else "Join membership card to get rewards",
@@ -88,7 +88,7 @@ fun LoginRegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.surface
+                    containerColor = Color.White
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {

@@ -21,6 +21,13 @@ sealed class RegisterResult {
     object EmptyFields : RegisterResult()
 }
 
+sealed class UpdateProfileResult {
+    object Success : UpdateProfileResult()
+    object EmptyFields : UpdateProfileResult()
+    object EmailAlreadyExists : UpdateProfileResult()
+    object PhoneAlreadyExists : UpdateProfileResult()
+}
+
 sealed class LoginResult {
     data class Success(val memberId: Int) : LoginResult()
     object InvalidCredentials : LoginResult()
@@ -68,10 +75,23 @@ class CoffeeViewModel(
         }
     }
 
-    fun updateMemberProfile(member: Member) {
-        viewModelScope.launch {
-            repository.updateMember(member)
+    suspend fun updateMemberProfile(member: Member): UpdateProfileResult {
+        if (member.name.isBlank() || member.email.isBlank() || member.phone.isBlank()) {
+            return UpdateProfileResult.EmptyFields
         }
+
+        val existingEmailMember = repository.getMemberByEmail(member.email)
+        if (existingEmailMember != null && existingEmailMember.id != member.id) {
+            return UpdateProfileResult.EmailAlreadyExists
+        }
+
+        val existingPhoneMember = repository.getMemberByPhone(member.phone)
+        if (existingPhoneMember != null && existingPhoneMember.id != member.id) {
+            return UpdateProfileResult.PhoneAlreadyExists
+        }
+
+        repository.updateMember(member)
+        return UpdateProfileResult.Success
     }
 
     fun redeemReward(memberId: Int, rewardName: String, points: Int) {

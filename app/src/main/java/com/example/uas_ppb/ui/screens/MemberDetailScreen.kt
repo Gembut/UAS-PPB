@@ -56,13 +56,9 @@ fun MemberDetailScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = {
-                    Text(
-                        text = "Membership Profile",
-                        fontWeight = FontWeight.SemiBold
-                    )
-                },
+            AppTopBar(
+                title = "Membership Profile",
+                subtitle = "Coffee Bliss",
                 actions = {
                     IconButton(onClick = onProfileClick) {
                         Icon(
@@ -70,12 +66,7 @@ fun MemberDetailScreen(
                             contentDescription = "Profile Settings"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    actionIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         }
     ) { padding ->
@@ -147,17 +138,19 @@ fun MemberDetailScreen(
 @Composable
 fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
     val levelColor = when (member.level) {
-        "Gold" -> Color(0xFFFFD54F)
-        "Silver" -> Color(0xFFCFD8DC)
-        else -> Color(0xFFD7B899)
+        "Gold" -> Color(0xFFFFE082)
+        "Silver" -> Color(0xFFF5F7FA)
+        else -> Color(0xFFFFCC80)
     }
+    val cardBackground = Color(0xFF17362C)
+    val cardForeground = Color.White
 
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
         colors = CardDefaults.cardColors(
-            containerColor = MaterialTheme.colorScheme.primaryContainer,
-            contentColor = MaterialTheme.colorScheme.onPrimaryContainer
+            containerColor = cardBackground,
+            contentColor = cardForeground
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 8.dp)
     ) {
@@ -178,7 +171,7 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                     Text(
                         text = "Member Privileges",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.75f)
+                        color = cardForeground.copy(alpha = 0.75f)
                     )
                 }
             }
@@ -191,7 +184,7 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
             Text(
                 text = member.memberId,
                 style = MaterialTheme.typography.bodyMedium,
-                color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                color = cardForeground.copy(alpha = 0.7f)
             )
 
             Spacer(modifier = Modifier.height(32.dp))
@@ -205,7 +198,7 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                     Text(
                         text = "POINTS",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        color = cardForeground.copy(alpha = 0.7f)
                     )
                     Text(
                         text = member.points.toString(),
@@ -216,7 +209,7 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                         Text(
                             text = "${member.pointsToNextLevel} pts to ${member.nextLevel}",
                             style = MaterialTheme.typography.labelSmall,
-                            color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.8f)
+                            color = cardForeground.copy(alpha = 0.8f)
                         )
                     }
                 }
@@ -224,7 +217,7 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                     Text(
                         text = "LEVEL",
                         style = MaterialTheme.typography.labelSmall,
-                        color = MaterialTheme.colorScheme.onPrimaryContainer.copy(alpha = 0.7f)
+                        color = cardForeground.copy(alpha = 0.7f)
                     )
                     Row(verticalAlignment = Alignment.CenterVertically) {
                         Icon(
@@ -245,6 +238,7 @@ fun DigitalMemberCard(member: Member, onQrClick: () -> Unit) {
                 Icon(
                     Icons.Default.QrCode2,
                     contentDescription = "Show QR Code",
+                    tint = cardForeground,
                     modifier = Modifier
                         .size(64.dp)
                         .clickable(onClick = onQrClick)
@@ -352,7 +346,7 @@ fun TransactionItem(transaction: Transaction) {
                     color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
                 Text(
-                    text = transaction.date,
+                    text = transaction.displayDate,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
                 )

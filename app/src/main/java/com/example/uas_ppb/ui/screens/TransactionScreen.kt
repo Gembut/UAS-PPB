@@ -1,11 +1,14 @@
 package com.example.uas_ppb.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Payments
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.AnnotatedString
@@ -32,8 +35,9 @@ fun TransactionScreen(
 
     Scaffold(
         topBar = {
-            TopAppBar(
-                title = { Text("New Transaction", fontWeight = FontWeight.SemiBold) },
+            AppTopBar(
+                title = "New Transaction",
+                subtitle = "Coffee Bliss",
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(
@@ -41,12 +45,7 @@ fun TransactionScreen(
                             contentDescription = "Back"
                         )
                     }
-                },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    titleContentColor = MaterialTheme.colorScheme.onPrimary,
-                    navigationIconContentColor = MaterialTheme.colorScheme.onPrimary
-                )
+                }
             )
         }
     ) { padding ->
@@ -54,27 +53,50 @@ fun TransactionScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(padding)
-                .padding(16.dp)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             member?.let { m ->
-                Text(
-                    text = "Transaction for:", 
-                    style = MaterialTheme.typography.labelMedium,
-                    color = MaterialTheme.colorScheme.outline
-                )
-                Text(
-                    text = m.name, 
-                    style = MaterialTheme.typography.headlineSmall,
-                    fontWeight = FontWeight.Bold,
-                    color = MaterialTheme.colorScheme.onBackground
-                )
-                Text(
-                    text = m.memberId, 
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.outline
-                )
-                
-                Spacer(modifier = Modifier.height(24.dp))
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    shape = RoundedCornerShape(20.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color(0xFF17362C),
+                        contentColor = Color.White
+                    )
+                ) {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(20.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Column {
+                            Text(
+                                text = "Transaction for",
+                                style = MaterialTheme.typography.labelMedium,
+                                color = Color.White.copy(alpha = 0.76f)
+                            )
+                            Text(
+                                text = m.name,
+                                style = MaterialTheme.typography.headlineSmall,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = m.memberId,
+                                style = MaterialTheme.typography.bodyMedium,
+                                color = Color.White.copy(alpha = 0.7f)
+                            )
+                        }
+                        Icon(
+                            imageVector = Icons.Default.Payments,
+                            contentDescription = null,
+                            tint = Color(0xFFFFCC80),
+                            modifier = Modifier.size(32.dp)
+                        )
+                    }
+                }
                 
                 OutlinedTextField(
                     value = amount,
@@ -99,8 +121,8 @@ fun TransactionScreen(
                 
                 val pointsPreview = if (amount.isNotBlank()) (amount.toDoubleOrNull() ?: 0.0) / 10000 else 0.0
                 Surface(
-                    color = MaterialTheme.colorScheme.primaryContainer,
-                    shape = MaterialTheme.shapes.medium,
+                    color = Color(0xFF17362C),
+                    shape = RoundedCornerShape(16.dp),
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Row(
@@ -109,18 +131,16 @@ fun TransactionScreen(
                     ) {
                         Text(
                             text = "Points to be earned:",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer
+                            color = Color.White.copy(alpha = 0.78f)
                         )
                         Text(
                             text = "${pointsPreview.toInt()} pts",
-                            color = MaterialTheme.colorScheme.onPrimaryContainer,
+                            color = Color.White,
                             fontWeight = FontWeight.Bold
                         )
                     }
                 }
-                
-                Spacer(modifier = Modifier.height(32.dp))
-                
+
                 Button(
                     onClick = {
                         val amt = amount.toDoubleOrNull()

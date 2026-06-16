@@ -21,7 +21,7 @@ data class Transaction(
     companion object {
         private const val STORAGE_PATTERN = "yyyy-MM-dd HH:mm:ss"
         private const val LEGACY_PATTERN = "dd MMM yyyy, HH:mm"
-        private const val DISPLAY_PATTERN = "dd MMM yyyy, HH:mm"
+        private const val DISPLAY_PATTERN = "dd MMM yyyy HH:mm"
 
         fun formatTransactionDisplayDate(value: String): String {
             val locale = Locale.getDefault()

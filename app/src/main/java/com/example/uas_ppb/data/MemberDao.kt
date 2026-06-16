@@ -36,6 +36,12 @@ interface MemberDao {
     @Query("SELECT * FROM members WHERE email = :email OR phone = :phone LIMIT 1")
     suspend fun getMemberByEmailOrPhone(email: String, phone: String): Member?
 
+    @Query("SELECT * FROM members WHERE email = :email LIMIT 1")
+    suspend fun getMemberByEmail(email: String): Member?
+
+    @Query("SELECT * FROM members WHERE phone = :phone LIMIT 1")
+    suspend fun getMemberByPhone(phone: String): Member?
+
     @Query("SELECT COUNT(*) FROM members")
     fun getMemberCount(): Flow<Int>
 }
