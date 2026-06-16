@@ -7,8 +7,7 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
-import com.example.uas_ppb.ui.screens.AddMemberScreen
-import com.example.uas_ppb.ui.screens.HomeScreen
+import com.example.uas_ppb.ui.screens.LoginRegisterScreen
 import com.example.uas_ppb.ui.screens.MemberDetailScreen
 import com.example.uas_ppb.ui.screens.RewardScreen
 import com.example.uas_ppb.ui.screens.SplashScreen
@@ -17,8 +16,7 @@ import com.example.uas_ppb.ui.viewmodel.CoffeeViewModel
 
 sealed class Screen(val route: String) {
     object Splash : Screen("splash")
-    object Home : Screen("home")
-    object AddMember : Screen("add_member")
+    object LoginRegister : Screen("login_register")
     object MemberDetail : Screen("member_detail/{memberId}") {
         fun createRoute(memberId: Int) = "member_detail/$memberId"
     }
@@ -43,24 +41,28 @@ fun CoffeeNavGraph(
     ) {
         composable(Screen.Splash.route) {
             SplashScreen(onSplashFinished = {
-                navController.navigate(Screen.Home.route) {
-                    popUpTo(Screen.Splash.route) { inclusive = true }
+                val isLoggedIn = viewModel.isLoggedIn.value
+                val memberId = viewModel.loggedInMemberId.value
+                
+                if (isLoggedIn && memberId != null) {
+                    navController.navigate(Screen.MemberDetail.createRoute(memberId)) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
+                } else {
+                    navController.navigate(Screen.LoginRegister.route) {
+                        popUpTo(Screen.Splash.route) { inclusive = true }
+                    }
                 }
             })
         }
-        composable(Screen.Home.route) {
-            HomeScreen(
+        composable(Screen.LoginRegister.route) {
+            LoginRegisterScreen(
                 viewModel = viewModel,
-                onAddMemberClick = { navController.navigate(Screen.AddMember.route) },
-                onMemberClick = { memberId -> 
-                    navController.navigate(Screen.MemberDetail.createRoute(memberId))
+                onLoginSuccess = { memberId ->
+                    navController.navigate(Screen.MemberDetail.createRoute(memberId)) {
+                        popUpTo(Screen.LoginRegister.route) { inclusive = true }
+                    }
                 }
-            )
-        }
-        composable(Screen.AddMember.route) {
-            AddMemberScreen(
-                viewModel = viewModel,
-                onBack = { navController.popBackStack() }
             )
         }
         composable(
@@ -71,7 +73,11 @@ fun CoffeeNavGraph(
             MemberDetailScreen(
                 memberId = memberId,
                 viewModel = viewModel,
-                onBack = { navController.popBackStack() },
+                onLogoutClick = {
+                    navController.navigate(Screen.LoginRegister.route) {
+                        popUpTo(Screen.MemberDetail.route) { inclusive = true }
+                    }
+                },
                 onAddTransaction = { navController.navigate(Screen.Transaction.createRoute(memberId)) },
                 onRedeemReward = { navController.navigate(Screen.Reward.createRoute(memberId)) }
             )

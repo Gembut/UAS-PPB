@@ -27,6 +27,9 @@ interface MemberDao {
     @Query("UPDATE members SET points = points - :deductedPoints WHERE id = :memberId")
     suspend fun deductPoints(memberId: Int, deductedPoints: Int)
 
+    @Query("SELECT * FROM members WHERE name = :name LIMIT 1")
+    suspend fun getMemberByName(name: String): Member?
+
     @Query("SELECT COUNT(*) FROM members")
     fun getMemberCount(): Flow<Int>
 }

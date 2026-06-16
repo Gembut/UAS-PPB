@@ -47,4 +47,9 @@ class CoffeeRepository(
         transactionDao.insert(transaction)
         memberDao.deductPoints(memberId, rewardPoints)
     }
+
+    // Member authentication functions
+    suspend fun registerMember(member: Member): Long = memberDao.insert(member)
+    
+    suspend fun getMemberByName(name: String): Member? = memberDao.getMemberByName(name)
 }

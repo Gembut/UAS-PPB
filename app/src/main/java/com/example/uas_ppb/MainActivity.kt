@@ -16,7 +16,10 @@ import com.example.uas_ppb.ui.viewmodel.CoffeeViewModelFactory
 class MainActivity : ComponentActivity() {
     
     private val viewModel: CoffeeViewModel by viewModels {
-        CoffeeViewModelFactory((application as CoffeeBlissApplication).repository)
+        CoffeeViewModelFactory(
+            (application as CoffeeBlissApplication).repository,
+            applicationContext
+        )
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {

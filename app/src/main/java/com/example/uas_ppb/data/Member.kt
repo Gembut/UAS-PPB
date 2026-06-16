@@ -10,6 +10,7 @@ data class Member(
     val name: String,
     val email: String,
     val phone: String,
+    val password: String = "",
     val points: Int = 0
 ) {
     val memberId: String get() = "MBR${id.toString().padStart(5, '0')}"
