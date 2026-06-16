@@ -26,6 +26,16 @@ Aplikasi ini dirancang untuk:
 - menampilkan kartu member digital yang dapat dipindai melalui QR code
 - menyediakan halaman profile untuk update data member
 
+## 📲 Download & Link Proyek
+| Kategori | Link |
+|---|---|
+| **Aplikasi** | [📥 Download APK]() |
+| **Video Presentasi** | <a href="" target="_blank">🎬 Tonton di YouTube</a> |
+| **Presentasi (PDF)** | [📊 Download PPT]() |
+| **Laporan (Blog)** | [📝 Lihat Laporan]() |
+
+> **Catatan:** Untuk menginstal APK, pastikan Anda telah mengizinkan "Install from Unknown Sources" di pengaturan HP Anda.
+
 ## Fitur Utama
 ### 1. Splash Screen
 - Menampilkan identitas aplikasi saat pertama kali dibuka
@@ -208,5 +218,13 @@ Contoh:
 4. Jalankan aplikasi pada emulator atau perangkat Android
 
 
+## 🖼️ Infografis Aplikasi
+| | | |
+|---|---|---|
+| <img width="388" height="857" alt="Screenshot 2026-06-16 224836" src="https://github.com/user-attachments/assets/21c7c4a8-cb6a-4e9f-95b5-caa57181ea35" /> | <img width="383" height="857" alt="Screenshot 2026-06-16 224935" src="https://github.com/user-attachments/assets/4cfbdda9-f0f2-4532-893c-aa1fed5e5bda" /> | <img width="390" height="862" alt="Screenshot 2026-06-16 225027" src="https://github.com/user-attachments/assets/6351040b-745a-4906-afe8-d580eac2d064" /> |
+| <img width="394" height="859" alt="Screenshot 2026-06-16 225043" src="https://github.com/user-attachments/assets/5c807729-fbee-491c-b92e-765b9efc637f" /> | <img width="389" height="860" alt="Screenshot 2026-06-16 225106" src="https://github.com/user-attachments/assets/40053dc2-cdcd-4969-81ea-e0d6066337ff" /> | <img width="398" height="860" alt="Screenshot 2026-06-16 225119" src="https://github.com/user-attachments/assets/693ef3b3-6b19-48af-b547-3c9b678f93da" /> |
+| <img width="393" height="860" alt="Screenshot 2026-06-16 225127" src="https://github.com/user-attachments/assets/dc5483f6-aec0-4531-9ae0-a8064393dd83" /> | <img width="394" height="862" alt="Screenshot 2026-06-16 225136" src="https://github.com/user-attachments/assets/972b1b19-6178-4fdf-8cf8-2e97907835c5" /> | <img width="390" height="865" alt="Screenshot 2026-06-16 225208" src="https://github.com/user-attachments/assets/99d00a5d-b9f1-4493-80ab-4458a6348f38" /> |
+| <img width="382" height="856" alt="Screenshot 2026-06-16 225227" src="https://github.com/user-attachments/assets/fa98dc6f-25e5-44ce-ab2f-e8b703fdc089" /> | <img width="387" height="864" alt="Screenshot 2026-06-16 225244" src="https://github.com/user-attachments/assets/b75f6064-4314-4b0c-a566-9071e32ad21a" /> | <img width="389" height="860" alt="Screenshot 2026-06-16 225254" src="https://github.com/user-attachments/assets/b28bb930-786b-4d85-b088-39f8a6051ffb" /> |
+| <img width="387" height="858" alt="Screenshot 2026-06-16 225303" src="https://github.com/user-attachments/assets/3d69f49a-3e11-4414-850a-1a1344e3f9f4" /> | <img width="386" height="859" alt="Screenshot 2026-06-16 225313" src="https://github.com/user-attachments/assets/831b8c13-f8d7-4c57-bfa7-ba677ae94f0d" /> |
 
 
