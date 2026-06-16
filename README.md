@@ -6,7 +6,7 @@ Aplikasi ini mensimulasikan sistem membership untuk coffee shop, mulai dari regi
 
 Proyek ini dibuat untuk menunjukkan implementasi konsep mobile programming modern pada Android, khususnya:
 - UI declarative dengan Jetpack Compose
-- local database dengan Room
+- Room database
 - arsitektur sederhana berbasis Repository dan ViewModel
 - navigasi antar halaman dengan Navigation Compose
 - state management dan penyimpanan sesi login lokal
