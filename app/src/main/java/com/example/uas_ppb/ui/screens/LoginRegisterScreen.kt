@@ -48,10 +48,15 @@ fun LoginRegisterScreen(
     var errorMessage by remember { mutableStateOf<String?>(null) }
     var isLoading by remember { mutableStateOf(false) }
 
+    // Helper untuk validasi email
+    fun isValidEmail(target: String): Boolean {
+        return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
+    }
+
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFFF4F0E8)),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -66,7 +71,7 @@ fun LoginRegisterScreen(
             Icon(
                 imageVector = Icons.Default.Coffee,
                 contentDescription = null,
-                tint = Color(0xFF17362C),
+                tint = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.size(72.dp)
             )
             Spacer(modifier = Modifier.height(8.dp))
@@ -74,7 +79,7 @@ fun LoginRegisterScreen(
                 text = "Coffee Bliss",
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF17362C)
+                color = MaterialTheme.colorScheme.primary
             )
             Text(
                 text = if (isLoginMode) "Sign in to see your membership" else "Join membership card to get rewards",
@@ -88,7 +93,7 @@ fun LoginRegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(16.dp),
                 colors = CardDefaults.cardColors(
-                    containerColor = Color.White
+                    containerColor = MaterialTheme.colorScheme.surface
                 ),
                 elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
             ) {
@@ -114,11 +119,7 @@ fun LoginRegisterScreen(
                             label = { Text("Email atau No. Telepon") },
                             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                focusedLabelColor = MaterialTheme.colorScheme.primary
-                            )
+                            modifier = Modifier.fillMaxWidth()
                         )
                     } else {
                         OutlinedTextField(
@@ -130,11 +131,7 @@ fun LoginRegisterScreen(
                             label = { Text("Nama Lengkap") },
                             leadingIcon = { Icon(Icons.Default.Person, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                focusedLabelColor = MaterialTheme.colorScheme.primary
-                            )
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
@@ -151,30 +148,26 @@ fun LoginRegisterScreen(
                             leadingIcon = { Icon(Icons.Default.Email, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
                             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                focusedLabelColor = MaterialTheme.colorScheme.primary
-                            )
+                            modifier = Modifier.fillMaxWidth()
                         )
 
                         // Phone Field (Register Only)
                         Spacer(modifier = Modifier.height(12.dp))
                         OutlinedTextField(
                             value = phone,
-                            onValueChange = {
-                                phone = it
-                                errorMessage = null
+                            onValueChange = { input ->
+                                // Validasi: Hanya angka dan maksimal 16 karakter
+                                val filtered = input.filter { it.isDigit() }
+                                if (filtered.length <= 16) {
+                                    phone = filtered
+                                    errorMessage = null
+                                }
                             },
                             label = { Text("No. Telepon") },
                             leadingIcon = { Icon(Icons.Default.Phone, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
                             singleLine = true,
-                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                focusedLabelColor = MaterialTheme.colorScheme.primary
-                            )
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
@@ -198,11 +191,7 @@ fun LoginRegisterScreen(
                                 Icon(image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                             }
                         },
-                        modifier = Modifier.fillMaxWidth(),
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedBorderColor = MaterialTheme.colorScheme.primary,
-                            focusedLabelColor = MaterialTheme.colorScheme.primary
-                        )
+                        modifier = Modifier.fillMaxWidth()
                     )
 
                     // Confirm Password Field (Register Mode Only)
@@ -225,15 +214,11 @@ fun LoginRegisterScreen(
                                     Icon(image, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                                 }
                             },
-                            modifier = Modifier.fillMaxWidth(),
-                            colors = OutlinedTextFieldDefaults.colors(
-                                focusedBorderColor = MaterialTheme.colorScheme.primary,
-                                focusedLabelColor = MaterialTheme.colorScheme.primary
-                            )
+                            modifier = Modifier.fillMaxWidth()
                         )
                     }
 
-                    // Error message print
+                    // Error message display
                     if (errorMessage != null) {
                         Spacer(modifier = Modifier.height(12.dp))
                         Text(
@@ -257,14 +242,25 @@ fun LoginRegisterScreen(
                                 return@Button
                             }
 
-                            if (!isLoginMode && (name.isBlank() || email.isBlank() || phone.isBlank() || password.isBlank() || confirmPassword.isBlank())) {
-                                errorMessage = "Semua field registrasi harus diisi"
-                                return@Button
-                            }
-
-                            if (!isLoginMode && password != confirmPassword) {
-                                errorMessage = "Password konfirmasi tidak cocok"
-                                return@Button
+                            if (!isLoginMode) {
+                                if (name.isBlank() || email.isBlank() || phone.isBlank() || password.isBlank() || confirmPassword.isBlank()) {
+                                    errorMessage = "Semua field registrasi harus diisi"
+                                    return@Button
+                                }
+                                // a. Validasi Nomor Telepon (Min 10)
+                                if (phone.length < 10) {
+                                    errorMessage = "Nomor telepon minimal 10 digit"
+                                    return@Button
+                                }
+                                // b. Validasi Email (Format Valid)
+                                if (!isValidEmail(email)) {
+                                    errorMessage = "Format email tidak valid (contoh: user@mail.com)"
+                                    return@Button
+                                }
+                                if (password != confirmPassword) {
+                                    errorMessage = "Password konfirmasi tidak cocok"
+                                    return@Button
+                                }
                             }
 
                             isLoading = true
