@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Logout
 import androidx.compose.material.icons.filled.CardMembership
@@ -68,7 +69,14 @@ fun MemberDetailScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Member Details", color = Color.White) },
+                title = {
+                    Text(
+                        text = "Membership Profile",
+                        color = Color.White,
+                        fontWeight = FontWeight.SemiBold,
+                        letterSpacing = 0.3.sp
+                    )
+                },
                 actions = {
                     IconButton(onClick = { showLogoutDialog = true }) {
                         Icon(
@@ -134,6 +142,12 @@ fun MemberDetailScreen(
 
 @Composable
 fun DigitalMemberCard(member: Member) {
+    val levelColor = when (member.level) {
+        "Gold" -> Color(0xFFFFD54F)
+        "Silver" -> Color(0xFFCFD8DC)
+        else -> Color(0xFFD7B899)
+    }
+
     Card(
         modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp),
@@ -144,7 +158,15 @@ fun DigitalMemberCard(member: Member) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Default.CardMembership, contentDescription = null, tint = Color.White, modifier = Modifier.size(32.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text("COFFEE BLISS", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Column {
+                    Text("COFFEE BLISS", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(
+                        text = "Member Privileges",
+                        color = Color.White.copy(alpha = 0.75f),
+                        fontSize = 12.sp,
+                        letterSpacing = 0.8.sp
+                    )
+                }
             }
             Spacer(modifier = Modifier.height(24.dp))
             Text(text = member.name, color = Color.White, fontSize = 24.sp, fontWeight = FontWeight.Bold)
@@ -156,10 +178,39 @@ fun DigitalMemberCard(member: Member) {
                 Column {
                     Text(text = "POINTS", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
                     Text(text = member.points.toString(), color = Color.White, fontSize = 28.sp, fontWeight = FontWeight.Bold)
+                    if (member.nextLevel != null) {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "${member.pointsToNextLevel} pts to ${member.nextLevel}",
+                            color = Color.White.copy(alpha = 0.8f),
+                            fontSize = 12.sp
+                        )
+                    } else {
+                        Spacer(modifier = Modifier.height(4.dp))
+                        Text(
+                            text = "Top membership tier unlocked",
+                            color = Color.White.copy(alpha = 0.8f),
+                            fontSize = 12.sp
+                        )
+                    }
                 }
                 Column(horizontalAlignment = Alignment.End) {
                     Text(text = "LEVEL", color = Color.White.copy(alpha = 0.7f), fontSize = 12.sp)
-                    Text(text = member.level, color = Color.White, fontSize = 18.sp, fontWeight = FontWeight.SemiBold)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            imageVector = Icons.Default.AutoAwesome,
+                            contentDescription = null,
+                            tint = levelColor,
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Spacer(modifier = Modifier.width(6.dp))
+                        Text(
+                            text = member.level,
+                            color = levelColor,
+                            fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                    }
                 }
                 Icon(Icons.Default.QrCode2, contentDescription = "QR Code", tint = Color.White, modifier = Modifier.size(64.dp))
             }
@@ -184,7 +235,7 @@ fun TransactionItem(transaction: Transaction) {
             Spacer(modifier = Modifier.width(16.dp))
             Column {
                 Text(text = transaction.title, fontWeight = FontWeight.Bold)
-                Text(text = transaction.date, fontSize = 12.sp, color = Color.Gray)
+                Text(text = transaction.displayDate, fontSize = 12.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.weight(1f))
             Column(horizontalAlignment = Alignment.End) {

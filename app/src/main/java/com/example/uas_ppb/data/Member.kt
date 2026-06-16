@@ -19,4 +19,14 @@ data class Member(
         points >= 200 -> "Silver"
         else -> "Bronze"
     }
+    val nextLevel: String? get() = when {
+        points >= 500 -> null
+        points >= 200 -> "Gold"
+        else -> "Silver"
+    }
+    val pointsToNextLevel: Int get() = when {
+        points >= 500 -> 0
+        points >= 200 -> 500 - points
+        else -> 200 - points
+    }
 }

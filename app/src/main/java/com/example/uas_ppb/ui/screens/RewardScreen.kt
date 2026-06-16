@@ -1,30 +1,70 @@
 package com.example.uas_ppb.ui.screens
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CardGiftcard
+import androidx.compose.material.icons.filled.Coffee
+import androidx.compose.material.icons.filled.Fastfood
+import androidx.compose.material.icons.filled.WorkspacePremium
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.uas_ppb.data.Member
 import com.example.uas_ppb.ui.viewmodel.CoffeeViewModel
 
-data class Reward(val name: String, val points: Int)
+private enum class MembershipLevel(val rank: Int) {
+    BRONZE(1),
+    SILVER(2),
+    GOLD(3)
+}
 
-val rewardList = listOf(
-    Reward("Espresso", 50),
-    Reward("Cappuccino", 100),
-    Reward("Latte Gratis", 150)
+private enum class RewardCategory(
+    val title: String,
+    val icon: ImageVector,
+    val accentColor: Color
+) {
+    DRINK("Minuman", Icons.Default.Coffee, Color(0xFF2E7D32)),
+    FOOD("Makanan", Icons.Default.Fastfood, Color(0xFFE65100)),
+    MERCH("Merch", Icons.Default.WorkspacePremium, Color(0xFF1565C0))
+}
+
+private data class Reward(
+    val name: String,
+    val points: Int,
+    val category: RewardCategory,
+    val minimumLevel: MembershipLevel
 )
+
+private val rewardList = listOf(
+    Reward("Espresso Gratis", 50, RewardCategory.DRINK, MembershipLevel.BRONZE),
+    Reward("Americano Gratis", 80, RewardCategory.DRINK, MembershipLevel.BRONZE),
+    Reward("Croissant Butter", 90, RewardCategory.FOOD, MembershipLevel.BRONZE),
+    Reward("Cappuccino Signature", 120, RewardCategory.DRINK, MembershipLevel.SILVER),
+    Reward("Cheese Danish", 140, RewardCategory.FOOD, MembershipLevel.SILVER),
+    Reward("Tumbler Coffee Bliss", 220, RewardCategory.MERCH, MembershipLevel.SILVER),
+    Reward("Latte Premium", 180, RewardCategory.DRINK, MembershipLevel.GOLD),
+    Reward("Brunch Platter", 260, RewardCategory.FOOD, MembershipLevel.GOLD),
+    Reward("Exclusive Tote Bag", 320, RewardCategory.MERCH, MembershipLevel.GOLD)
+)
+
+private fun Member.toMembershipLevel(): MembershipLevel = when (level) {
+    "Gold" -> MembershipLevel.GOLD
+    "Silver" -> MembershipLevel.SILVER
+    else -> MembershipLevel.BRONZE
+}
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -38,7 +78,20 @@ fun RewardScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Redeem Reward", color = Color.White) },
+                title = {
+                    Column {
+                        Text(
+                            text = "Reward Collection",
+                            color = Color.White,
+                            fontWeight = FontWeight.SemiBold
+                        )
+                        Text(
+                            text = "Choose benefits based on your membership tier",
+                            color = Color.White.copy(alpha = 0.82f),
+                            fontSize = 12.sp
+                        )
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Back", tint = Color.White)
@@ -55,35 +108,67 @@ fun RewardScreen(
                 .padding(16.dp)
         ) {
             member?.let { m ->
+                val memberLevel = m.toMembershipLevel()
+                val rewardsByCategory = rewardList.groupBy { it.category }
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9))
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFFE8F5E9)),
+                    shape = RoundedCornerShape(20.dp)
                 ) {
-                    Column(modifier = Modifier.padding(16.dp)) {
-                        Text(text = "Your Current Points", fontSize = 14.sp)
-                        Text(
-                            text = "${m.points} pts",
-                            fontSize = 24.sp,
-                            fontWeight = FontWeight.Bold,
-                            color = Color(0xFF1B5E20)
-                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Column {
+                                Text(
+                                    text = "Your Current Points",
+                                    fontSize = 14.sp,
+                                    color = Color(0xFF546E7A)
+                                )
+                                Text(
+                                    text = "${m.points} pts",
+                                    fontSize = 26.sp,
+                                    fontWeight = FontWeight.Bold,
+                                    color = Color(0xFF1B5E20)
+                                )
+                                Spacer(modifier = Modifier.height(8.dp))
+                                MembershipLevelChip(label = "${m.level} Member", color = levelColor(m.level))
+                            }
+                            MembershipTierIcon(
+                                color = levelColor(m.level),
+                                label = m.level
+                            )
+                        }
                     }
-                }
 
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(text = "Available Rewards", fontWeight = FontWeight.Bold, fontSize = 18.sp)
                 Spacer(modifier = Modifier.height(8.dp))
 
                 LazyColumn {
-                    items(rewardList) { reward ->
-                        RewardItem(
-                            reward = reward,
-                            canRedeem = m.points >= reward.points,
-                            onRedeem = {
-                                viewModel.redeemReward(memberId, reward.name, reward.points)
-                                onBack()
+                    RewardCategory.entries.forEach { category ->
+                        val rewards = rewardsByCategory[category].orEmpty()
+                        if (rewards.isNotEmpty()) {
+                            item {
+                                RewardCategoryHeader(category = category)
                             }
-                        )
+                            items(rewards) { reward ->
+                                val canRedeem =
+                                    m.points >= reward.points && memberLevel.rank >= reward.minimumLevel.rank
+                                RewardItem(
+                                    reward = reward,
+                                    canRedeem = canRedeem,
+                                    onRedeem = {
+                                        viewModel.redeemReward(memberId, reward.name, reward.points)
+                                        onBack()
+                                    }
+                                )
+                            }
+                        }
                     }
                 }
             }
@@ -92,25 +177,92 @@ fun RewardScreen(
 }
 
 @Composable
-fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit) {
+private fun RewardCategoryHeader(category: RewardCategory) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 8.dp, bottom = 6.dp),
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Icon(
+            imageVector = category.icon,
+            contentDescription = null,
+            tint = category.accentColor
+        )
+        Spacer(modifier = Modifier.width(8.dp))
+        Text(
+            text = category.title,
+            fontWeight = FontWeight.SemiBold,
+            color = category.accentColor
+        )
+    }
+}
+
+@Composable
+private fun MembershipLevelChip(label: String, color: Color) {
+    Surface(
+        color = color.copy(alpha = 0.14f),
+        shape = MaterialTheme.shapes.small
+    ) {
+        Text(
+            text = label,
+            modifier = Modifier.padding(horizontal = 10.dp, vertical = 4.dp),
+            color = color,
+            fontSize = 12.sp,
+            fontWeight = FontWeight.SemiBold
+        )
+    }
+}
+
+@Composable
+private fun MembershipTierIcon(color: Color, label: String) {
+    Surface(
+        color = color.copy(alpha = 0.14f),
+        shape = RoundedCornerShape(14.dp)
+    ) {
+        Column(
+            modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            Icon(
+                imageVector = Icons.Default.WorkspacePremium,
+                contentDescription = null,
+                tint = color,
+                modifier = Modifier.size(22.dp)
+            )
+            Text(
+                text = label,
+                color = color,
+                fontSize = 11.sp,
+                fontWeight = FontWeight.SemiBold
+            )
+        }
+    }
+}
+
+@Composable
+private fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(vertical = 4.dp),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
+            .padding(vertical = 4.dp)
+            .alpha(if (canRedeem) 1f else 0.48f),
+        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
+        colors = CardDefaults.cardColors(containerColor = Color.White)
     ) {
         Row(
             modifier = Modifier.padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
-                imageVector = Icons.Default.CardGiftcard,
+                imageVector = reward.category.icon,
                 contentDescription = null,
-                tint = if (canRedeem) Color(0xFF1B5E20) else Color.Gray
+                tint = if (canRedeem) reward.category.accentColor else Color.Gray
             )
             Column(modifier = Modifier.padding(start = 16.dp)) {
                 Text(text = reward.name, fontWeight = FontWeight.Bold)
-                Text(text = "${reward.points} points required", fontSize = 12.sp, color = Color.Gray)
+                Text(text = "${reward.points} pts", fontSize = 12.sp, color = Color.Gray)
             }
             Spacer(modifier = Modifier.weight(1f))
             Button(
@@ -122,4 +274,10 @@ fun RewardItem(reward: Reward, canRedeem: Boolean, onRedeem: () -> Unit) {
             }
         }
     }
+}
+
+private fun levelColor(level: String): Color = when (level) {
+    "Gold" -> Color(0xFFF9A825)
+    "Silver" -> Color(0xFF78909C)
+    else -> Color(0xFF8D6E63)
 }

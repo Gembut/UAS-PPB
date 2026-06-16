@@ -17,7 +17,7 @@ class CoffeeRepository(
     suspend fun insertMember(member: Member): Long = memberDao.insert(member)
 
     private fun getCurrentDate(): String {
-        return SimpleDateFormat("dd MMM yyyy, HH:mm", Locale.getDefault()).format(Date())
+        return SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(Date())
     }
 
     suspend fun addTransaction(memberId: Int, amount: Double) {
