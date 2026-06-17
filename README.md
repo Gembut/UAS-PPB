@@ -30,9 +30,9 @@ Aplikasi ini dirancang untuk:
 | Kategori | Link |
 |---|---|
 | **Aplikasi** | [📥 Download APK](https://github.com/Gembut/UAS-PPB/blob/main/apk/CoffeeBliss.apk) |
-| **Video Presentasi** | <a href="" target="_blank">🎬 Tonton di YouTube</a> |
+| **Video Presentasi** | <a href="https://www.youtube.com/playlist?list=PLqtbbbWkOFycGM_pN81jchVuubYT872J3" target="_blank">🎬 Tonton di YouTube</a> |
 | **Presentasi (PDF)** | [📊 Download PPT]() |
-| **Laporan (Blog)** | [📝 Lihat Laporan]() |
+| **Laporan (Blog)** | [📝 Lihat Laporan](https://rafibudiman.blogspot.com/2026/06/eas-coffee-bliss.html) |
 
 > **Catatan:** Untuk menginstal APK, pastikan Anda telah mengizinkan "Install from Unknown Sources" di pengaturan HP Anda.
 
