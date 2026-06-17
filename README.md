@@ -180,7 +180,7 @@ Menyimpan data:
 - id
 - name
 - email
-- phone
+- phone 
 - password
 - points
 
