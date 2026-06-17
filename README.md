@@ -29,7 +29,7 @@ Aplikasi ini dirancang untuk:
 ## 📲 Download & Link Proyek
 | Kategori | Link |
 |---|---|
-| **Aplikasi** | [📥 Download APK]() |
+| **Aplikasi** | [📥 Download APK](https://github.com/Gembut/UAS-PPB/blob/main/apk/CoffeeBliss.apk) |
 | **Video Presentasi** | <a href="" target="_blank">🎬 Tonton di YouTube</a> |
 | **Presentasi (PDF)** | [📊 Download PPT]() |
 | **Laporan (Blog)** | [📝 Lihat Laporan]() |
